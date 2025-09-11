@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Scanner - Palette Maker | Transform Your World Into Beautiful Color Palettes</title>
+    <meta name="description" content="Transform your world into beautiful color palettes with Color Scanner - Palette Maker. Extract colors from camera, create palettes, and share your designs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Dark/Light Theme Variables */
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #333;
+            --text-secondary: #6c757d;
+            --accent-color: #007bff;
+            --border-color: rgba(0, 123, 255, 0.1);
+            --card-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #4a9eff;
+            --border-color: rgba(74, 158, 255, 0.2);
+            --card-bg: #2d2d2d;
+            --header-bg: rgba(45, 45, 45, 0.95);
+        }
+
+        /* Header and Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-color);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), #00d4ff);
+            border-radius: 1px;
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        /* Hero Section */
+        #hero {
+            padding: 120px 0 80px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 0.2s forwards;
+        }
+        
+        .hero-content h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero-content .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+        
+        .hero-content p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        .cta-button:hover .download-icon {
+            transform: translateY(2px);
+        }
+        
+        .hero-image {
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 15%, #f093fb 30%, #f5576c 45%, #4facfe 60%, #00f2fe 75%, #667eea 100%);
+            background-size: 300% 300%;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            max-width: 700px;
+            margin: 3rem auto 0;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.6s forwards, gradientShift 8s ease-in-out infinite;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        .hero-image::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+        }
+        
+        /* Features Section */
+        #features {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
+        }
+        
+        .feature-card.animate {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Legal Sections */
+        #terms, #privacy {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+        }
+        
+        #privacy {
+            background: var(--bg-primary);
+        }
+        
+        .legal-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .legal-text {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            max-height: 450px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            line-height: 1.8;
+        }
+        
+        .legal-text h1 {
+            color: var(--text-primary);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .legal-text h2 {
+            color: var(--accent-color);
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .legal-text h3 {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        
+        .legal-text p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .legal-text ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        
+        .legal-text li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Contact Section */
+        #contact {
+            padding: 80px 0;
+            background: var(--bg-secondary);
+            text-align: center;
+            position: relative;
+        }
+
+        #contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+        
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-container h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-container .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-form {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #00d4ff, #f093fb, #f5576c);
+            background-size: 200% 100%;
+            animation: gradientMove 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            position: relative;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(74, 158, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(74, 158, 255, 0.4);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .contact-info {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-method {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .contact-method:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-method-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .contact-email {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-email:hover {
+            color: #00d4ff;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4);
+        }
+
+        /* Loading Animation for Submit Button */
+        .submit-btn.loading {
+            pointer-events: none;
+        }
+
+        .submit-btn.loading span {
+            opacity: 0;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Floating particles animation */
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: linear-gradient(45deg, var(--accent-color), #00d4ff);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; left: 70%; animation-delay: 2s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; left: 80%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            50% { transform: translateY(-10px) rotate(180deg); }
+        }
+
+        /* Parallax Hero Background */
+        .hero-parallax {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            z-index: -1;
+        }
+
+        .hero-parallax::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, rgba(74, 158, 255, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 50%;
+            top: 10%;
+            left: 80%;
+            animation: floatSlow 20s ease-in-out infinite;
+        }
+
+        .hero-parallax::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(245, 87, 108, 0.1), rgba(240, 147, 251, 0.1));
+            border-radius: 50%;
+            top: 60%;
+            left: 10%;
+            animation: floatSlow 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) translateX(20px) rotate(120deg); }
+            66% { transform: translateY(20px) translateX(-20px) rotate(240deg); }
+        }
+
+        /* Minimalist Interactive Mouse Effects */
+        .color-orb {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffd93d, #6c5ce7);
+            background-size: 600% 600%;
+            animation: colorShift 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+            display: none;
+        }
+
+        .color-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            transition: all 0.6s ease-out;
+            display: none;
+        }
+
+        .color-trail:nth-child(2) { background: #ff6b6b; animation-delay: 0.1s; }
+        .color-trail:nth-child(3) { background: #4ecdc4; animation-delay: 0.2s; }
+        .color-trail:nth-child(4) { background: #45b7d1; animation-delay: 0.3s; }
+
+        @keyframes colorShift {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+            }
+            25% { 
+                background-position: 100% 50%;
+                box-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
+            }
+            50% { 
+                background-position: 50% 100%;
+                box-shadow: 0 0 20px rgba(69, 183, 209, 0.6);
+            }
+            75% { 
+                background-position: 100% 0%;
+                box-shadow: 0 0 20px rgba(150, 206, 180, 0.6);
+            }
+        }
+
+        /* Show only on desktop */
+        @media (min-width: 769px) {
+            .color-orb, .color-trail {
+                display: block;
+            }
+        }
+
+        /* Smooth cursor trail */
+        .cursor-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-color), #00d4ff);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Hide cursor trail on mobile */
+        @media (max-width: 768px) {
+            .cursor-trail {
+                display: none !important;
+            }
+        }
+
+        /* Dynamic cursor color */
+        .cursor-trail.custom-color {
+            background: var(--cursor-color, var(--accent-color));
+            box-shadow: 0 0 20px var(--cursor-color, var(--accent-color));
+        }
+
+        /* Easter egg - konami code reward */
+        .konami-surprise {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe);
+            background-size: 300% 300%;
+            animation: gradientShift 2s ease-in-out infinite;
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 10000;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+            transition: all 0.5s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .konami-surprise.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .color-preview {
+                left: 10px;
+                padding: 10px 8px;
+            }
+            
+            .color-preview h4 {
+                font-size: 0.7rem;
+                margin-bottom: 8px;
+            }
+            
+            .color-swatch {
+                width: 30px;
+                height: 30px;
+                margin: 5px auto;
+            }
+            
+            .color-input-wrapper {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .custom-color-picker {
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            
+            .hero-parallax::before,
+            .hero-parallax::after {
+                width: 100px;
+                height: 100px;
+            }
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 3rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .fade-in.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Comprehensive Mobile Responsive Design */
+        @media (max-width: 768px) {
+            /* Body adjustments for mobile */
+            body {
+                padding-top: 75px; /* Extra body padding to push everything down */
+                margin-top: 0;
+            }
+            
+            /* Hide color preview on mobile completely */
+            .color-preview {
+                display: none !important;
+            }
+            
+            /* Header and Navigation mobile fixes */
+            header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: var(--header-bg);
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            nav {
+                padding: 10px 20px; /* Increased padding for better spacing */
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                min-height: 65px; /* Slightly increased height */
+                position: relative;
+            }
+            
+            .logo {
+                font-size: 1.2rem; /* Slightly larger logo */
+                font-weight: 700;
+                color: var(--accent-color);
+                flex: 1; /* Take available space */
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: none; /* Remove width restriction */
+                min-width: 180px; /* Minimum space for logo */
+            }
+            
+            /* Center space for future logo/icon */
+            .nav-center {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 40px;
+                /* Reserved space for future palette icon */
+            }
+            
+            /* Right side nav controls - better organized */
+            .nav-right {
+                display: flex;
+                align-items: center;
+                gap: 12px; /* Better spacing */
+                flex: 1;
+                justify-content: flex-end;
+            }
+            
+            .theme-toggle {
+                margin: 0;
+                padding: 10px 15px; /* Better padding */
+                font-size: 0.9rem; /* Slightly larger */
+                border-radius: 20px; /* More rounded */
+                min-width: 60px; /* Better width */
+                height: 40px; /* Fixed height */
+                flex-shrink: 0;
+                border: 2px solid var(--border-color);
+                background: rgba(255, 255, 255, 0.05);
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+            
+            .theme-toggle:hover {
+                transform: scale(1.05);
+                border-color: var(--accent-color);
+                background: var(--accent-color);
+                color: white;
+                box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+            }
+            
+            .mobile-menu {
+                display: block;
+                font-size: 1.4rem; /* Better size */
+                padding: 8px;
+                width: 40px; /* Fixed width */
+                height: 40px; /* Same height as theme toggle */
+                border-radius: 20px; /* Match theme toggle */
+                background: rgba(255, 255, 255, 0.1);
+                border: 2px solid var(--border-color);
+                transition: all 0.3s ease;
+                flex-shrink: 0;
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .mobile-menu:hover {
+                background: var(--accent-color);
+                color: white;
+                transform: scale(1.05);
+                border-color: var(--accent-color);
+                box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+            }
+            
+            .mobile-menu:active {
+                transform: scale(0.95);
+            }
+            
+            /* Mobile navigation menu - Enhanced Design */
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 75px; /* Adjusted for new header height (65px + 10px padding) */
+                left: 0;
+                right: 0;
+                background: var(--header-bg);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 15px 0;
+                border-bottom: 2px solid var(--border-color);
+                z-index: 1001; /* Higher than header */
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                transform: translateY(-100%);
+                transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                opacity: 0;
+            }
+            
+            .nav-links.mobile-open {
+                display: flex;
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .nav-links a {
+                padding: 20px 25px;
+                font-size: 1.15rem;
+                font-weight: 500;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                text-align: center;
+                transition: all 0.3s ease;
+                margin: 0;
+                background: transparent;
+                position: relative;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                transform: translateX(-20px);
+                opacity: 0;
+                animation: slideInMenuItem 0.6s ease forwards;
+            }
+            
+            .nav-links a:nth-child(1) { animation-delay: 0.1s; }
+            .nav-links a:nth-child(2) { animation-delay: 0.2s; }
+            .nav-links a:nth-child(3) { animation-delay: 0.3s; }
+            .nav-links a:nth-child(4) { animation-delay: 0.4s; }
+            
+            .nav-links a::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 0;
+                background: linear-gradient(90deg, var(--accent-color), #00d4ff);
+                transition: width 0.3s ease;
+                z-index: -1;
+            }
+            
+            .nav-links a:hover::before {
+                width: 100%;
+            }
+            
+            .nav-links a:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-links a:hover {
+                color: white;
+                transform: translateX(5px);
+                background: rgba(255, 255, 255, 0.05);
+            }
+            
+            @keyframes slideInMenuItem {
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            /* Hero section mobile optimization */
+            #hero {
+                padding: 280px 0 60px; /* EXTREME padding - mobile başlık tamamen clear olacak */
+                margin-top: 0;
+            }
+            
+            .hero-content {
+                text-align: center;
+                padding: 0 15px; /* Add horizontal padding */
+            }
+            
+            .hero-content h1 {
+                font-size: clamp(1.8rem, 7vw, 2.8rem); /* Slightly smaller for mobile */
+                margin-bottom: 1rem;
+                line-height: 1.2;
+                padding-top: 50px; /* EXTREME extra padding for absolute clearance */
+                margin-top: 0; /* Ensure no additional margin */
+            }
+            
+            .hero-content .subtitle {
+                font-size: clamp(1.1rem, 5vw, 1.5rem);
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+                line-height: 1.6;
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+            
+            /* CTA Button mobile optimization */
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+                border-radius: 25px;
+                margin: 20px auto;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 200px;
+                justify-content: center;
+            }
+            
+            .download-icon {
+                font-size: 1.2rem;
+            }
+            
+            /* Sections mobile spacing */
+            section {
+                padding: 60px 0;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            /* Text sizing improvements */
+            h2 {
+                font-size: clamp(1.8rem, 6vw, 2.5rem);
+                margin-bottom: 1rem;
+            }
+            
+            h3 {
+                font-size: clamp(1.3rem, 5vw, 1.8rem);
+            }
+            
+            p {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+            .cta-button {
+                padding: 14px 28px;
+                font-size: 1rem;
+                gap: 8px;
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            /* Features grid mobile */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+                text-align: center;
+            }
+            
+            /* Terms and Privacy mobile */
+            .terms-content, .privacy-content {
+                padding: 1.5rem;
+                margin: 0 15px;
+            }
+            
+            /* Contact form mobile */
+            .contact-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .contact-info, .contact-form {
+                flex: none;
+                width: 100%;
+            }
+            
+            /* Footer mobile */
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            /* Scroll to top button mobile */
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .hero-image {
+                height: 100px;
+                margin-top: 2rem;
+                border-radius: 15px;
+            }
+
+            .hero-parallax::before,
+            .hero-parallax::after {
+                width: 80px;
+                height: 80px;
+            }
+            
+            /* Sections spacing */
+            section {
+                padding: 60px 0 !important;
+            }
+            
+            .section-header h2 {
+                font-size: clamp(1.8rem, 6vw, 2.5rem);
+                margin-bottom: 0.8rem;
+            }
+
+            .section-header p {
+                font-size: 1rem;
+            }
+            
+            /* Features grid mobile */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .feature-card {
+                padding: 2rem 1.5rem;
+                margin: 0 auto;
+                max-width: 400px;
+            }
+
+            .feature-card h3 {
+                font-size: 1.25rem;
+            }
+            
+            /* Contact form mobile */
+            .contact-form {
+                padding: 2rem 1.5rem;
+                margin: 0 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .contact-methods {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .contact-method {
+                padding: 1.25rem;
+            }
+
+            /* Footer mobile */
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            /* Scroll to top button mobile */
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+
+            /* Floating particles mobile */
+            .floating-particles {
+                display: none;
+            }
+
+            /* Legal text mobile */
+            .legal-text {
+                padding: 1.5rem;
+                max-height: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            /* Extra small mobile adjustments */
+            #hero {
+                padding: 90px 0 50px;
+            }
+            
+            .hero-content h1 {
+                font-size: clamp(1.5rem, 10vw, 2.2rem);
+            }
+            
+            .cta-button {
+                padding: 12px 24px;
+                font-size: 0.95rem;
+                width: 100%;
+            }
+
+            .hero-image {
+                height: 80px;
+                margin-top: 1.5rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .feature-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .contact-form {
+                padding: 1.5rem 1rem;
+                margin: 0 10px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 12px 15px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .submit-btn {
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            /* Theme toggle smaller */
+            .theme-toggle {
+                padding: 5px 8px;
+                font-size: 0.85rem;
+            }
+
+            /* Legal sections mobile */
+            section {
+                padding: 50px 0 !important;
+            }
+
+            .legal-text {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Landscape mobile optimization */
+        @media (max-width: 768px) and (orientation: landscape) {
+            #hero {
+                padding: 220px 0 40px; /* EXTREME padding for landscape too */
+            }
+
+            .hero-content h1 {
+                font-size: clamp(1.8rem, 6vw, 2.2rem);
+                padding-top: 40px; /* Extra padding in landscape */
+            }
+
+            .hero-image {
+                height: 70px;
+                margin-top: 1rem;
+            }
+
+            section {
+                padding: 50px 0 !important;
+            }
+            
+            /* Compact navigation for landscape */
+            nav {
+                min-height: 55px;
+                padding: 8px 20px;
+            }
+            
+            .nav-links {
+                top: 63px; /* Adjusted for landscape header */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="#hero" class="logo">Color Scanner</a>
+            <div class="nav-center">
+                <!-- Reserved space for future palette icon -->
+            </div>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="#features" class="nav-link" onclick="closeMobileMenu()">Features</a></li>
+                    <li><a href="#terms" class="nav-link" onclick="closeMobileMenu()">Terms</a></li>
+                    <li><a href="#privacy" class="nav-link" onclick="closeMobileMenu()">Privacy</a></li>
+                    <li><a href="#contact" class="nav-link" onclick="closeMobileMenu()">Contact</a></li>
+                </ul>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+                <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-parallax"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Color Scanner - Palette Maker</h1>
+                <p class="subtitle">Transform your world into beautiful color palettes.</p>
+                <p>Transform your world into beautiful color palettes with Color Scanner - Palette Maker, the ultimate tool for designers, artists, and color enthusiasts. Whether you're capturing the perfect sunset hues, matching paint colors from a favorite photo, or building brand color schemes, Color Scanner makes it effortless to discover, create, and organize beautiful color palettes from the world around you. Download now and start your colorful journey!</p>
+                <a href="#" class="cta-button">
+                    <span class="download-icon">⬇</span> Download Now
+                </a>
+            </div>
+            <div class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2>Key Features</h2>
+                <p>Discover the powerful tools that make Color Scanner the ultimate color companion for professionals and enthusiasts alike.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📷</div>
+                    <h3>Camera Color Extraction</h3>
+                    <p>Point your camera at any object or scene to instantly capture and analyze colors with professional precision.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🖼️</div>
+                    <h3>Photo Library Analysis</h3>
+                    <p>Import existing images from your photo library to extract stunning color combinations and create inspiring palettes.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Professional Color Tools</h3>
+                    <p>Advanced color manipulation with precise controls, supporting HEX, RGB, HSL, HSV, and CMYK color formats.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📁</div>
+                    <h3>Palette Creation & Management</h3>
+                    <p>Build, organize, and save custom color palettes with intelligent categorization and easy access.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📤</div>
+                    <h3>Export & Share</h3>
+                    <p>Export palettes in various formats and share your creative color discoveries with others effortlessly.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Multi-language Support</h3>
+                    <p>Available in multiple languages for global accessibility, ensuring everyone can enjoy the color experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms of Service Section -->
+    <section id="terms">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2>Terms of Service</h2>
+            </div>
+            <div class="legal-content">
+                <div class="legal-text">
+                    <h1>Terms of Service for Color Scanner - Palette Maker</h1>
+                    <p><strong>Effective Date:</strong> September 9, 2025<br>
+                    <strong>Last Updated:</strong> September 9, 2025</p>
+
+                    <h2>Agreement to Terms</h2>
+                    <p>By downloading, installing, or using Color Scanner - Palette Maker (the "App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.</p>
+
+                    <h2>Description of Service</h2>
+                    <p>Color Scanner - Palette Maker is a mobile application that allows users to:</p>
+                    <ul>
+                        <li>Capture and analyze colors from camera images and photo library</li>
+                        <li>Create, save, and organize color palettes and gradients</li>
+                        <li>Convert colors between different formats (HEX, RGB, HSL, HSV, CMYK)</li>
+                        <li>Share and export color information</li>
+                        <li>Access premium features through subscription</li>
+                    </ul>
+
+                    <h2>Subscription Services</h2>
+                    <h3>Free Version Features</h3>
+                    <ul>
+                        <li>Save up to 10 colors in history</li>
+                        <li>Create up to 10 color palettes</li>
+                        <li>Save up to 10 gradients</li>
+                        <li>Basic color analysis and conversion</li>
+                        <li>Advertisement-supported experience</li>
+                    </ul>
+
+                    <h3>Premium Subscription Features</h3>
+                    <ul>
+                        <li>Unlimited color history</li>
+                        <li>Unlimited palette creation</li>
+                        <li>Unlimited gradient creation</li>
+                        <li>Ad-free experience</li>
+                        <li>Premium export quality</li>
+                        <li>Priority customer support</li>
+                        <li>Early access to new features</li>
+                    </ul>
+
+                    <h3>Subscription Terms</h3>
+                    <ul>
+                        <li><strong>Weekly Pro:</strong> $2.99 per week</li>
+                        <li><strong>Monthly Pro:</strong> $4.99 per month (Most Popular)</li>
+                        <li><strong>Annual Pro:</strong> $29.99 per year (Best Value - Save 50%)</li>
+                    </ul>
+
+                    <h3>Auto-Renewal</h3>
+                    <ul>
+                        <li>Subscriptions automatically renew unless canceled at least 24 hours before the current period ends</li>
+                        <li>Your Apple ID account will be charged for renewal within 24 hours prior to the end of the current period</li>
+                        <li>You can manage and cancel subscriptions in your Apple ID Account Settings</li>
+                    </ul>
+
+                    <h3>Free Trial</h3>
+                    <ul>
+                        <li>Some subscription plans may include a free trial period</li>
+                        <li>You can cancel during the trial period without charge</li>
+                        <li>If you don't cancel during the trial, you will be charged the subscription fee</li>
+                    </ul>
+
+                    <h2>User Responsibilities</h2>
+                    <h3>Acceptable Use</h3>
+                    <p>You agree to use the App only for lawful purposes and in accordance with these Terms. You will not:</p>
+                    <ul>
+                        <li>Use the App for any illegal or unauthorized purpose</li>
+                        <li>Attempt to reverse engineer, decompile, or disassemble the App</li>
+                        <li>Use the App to infringe on intellectual property rights of others</li>
+                        <li>Attempt to gain unauthorized access to our systems or other users' data</li>
+                        <li>Use the App to create, share, or distribute harmful or offensive content</li>
+                    </ul>
+
+                    <h3>Content Ownership</h3>
+                    <ul>
+                        <li>You retain ownership of all colors, palettes, and content you create using the App</li>
+                        <li>You grant us a limited license to process your content solely to provide App functionality</li>
+                        <li>You are responsible for ensuring you have rights to any images you analyze for colors</li>
+                    </ul>
+
+                    <h3>Camera and Photo Access</h3>
+                    <ul>
+                        <li>You grant the App permission to access your camera and photo library as needed</li>
+                        <li>Images are processed locally on your device and are not transmitted to our servers</li>
+                        <li>You are responsible for ensuring you have rights to analyze any images you select</li>
+                    </ul>
+
+                    <h2>Intellectual Property Rights</h2>
+                    <h3>Our Rights</h3>
+                    <ul>
+                        <li>The App, including its design, functionality, and content, is owned by us and protected by copyright and other intellectual property laws</li>
+                        <li>Our trademarks, logos, and brand elements may not be used without permission</li>
+                        <li>All rights not expressly granted to you are reserved</li>
+                    </ul>
+
+                    <h3>Your Rights</h3>
+                    <ul>
+                        <li>You retain ownership of colors, palettes, and gradients you create</li>
+                        <li>You may share and export your creations as permitted by the App's functionality</li>
+                        <li>You may not claim ownership of the App's underlying technology or design</li>
+                    </ul>
+
+                    <h2>Privacy and Data Protection</h2>
+                    <p>Your privacy is important to us. Our collection and use of your information is governed by our Privacy Policy, which is incorporated into these Terms by reference. By using the App, you consent to our Privacy Policy.</p>
+
+                    <h3>Data Processing</h3>
+                    <ul>
+                        <li>Color data and preferences are stored locally on your device</li>
+                        <li>We collect anonymous usage analytics to improve the App</li>
+                        <li>Subscription information is processed through RevenueCat and Apple's App Store</li>
+                    </ul>
+
+                    <h2>Disclaimers and Limitations</h2>
+                    <h3>Service Availability</h3>
+                    <ul>
+                        <li>We strive to provide reliable service but cannot guarantee uninterrupted access</li>
+                        <li>The App may be temporarily unavailable due to maintenance, updates, or technical issues</li>
+                        <li>We reserve the right to modify or discontinue features with reasonable notice</li>
+                    </ul>
+
+                    <h3>Color Accuracy</h3>
+                    <ul>
+                        <li>Color capture and analysis are provided "as is" without warranty of absolute accuracy</li>
+                        <li>Color representation may vary based on device display capabilities and lighting conditions</li>
+                        <li>We are not responsible for color matching decisions made based on App results</li>
+                    </ul>
+
+                    <h3>Limitation of Liability</h3>
+                    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW:</p>
+                    <ul>
+                        <li>WE PROVIDE THE APP "AS IS" WITHOUT WARRANTIES OF ANY KIND</li>
+                        <li>WE ARE NOT LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES</li>
+                        <li>OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT YOU PAID FOR THE APP IN THE PAST 12 MONTHS</li>
+                    </ul>
+
+                    <h2>Contact Information</h2>
+                    <p>For questions about these Terms of Service, please contact us:</p>
+                    <p><strong>Email:</strong> xaesionai@gmail.com<br>
+                    <strong>App:</strong> Color Scanner - Palette Maker</p>
+
+                    <p><strong>Last Updated:</strong> September 9, 2025<br>
+                    <strong>Version:</strong> 1.0.0</p>
+
+                    <p>By using Color Scanner - Palette Maker, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.</p>
+        </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy Section -->
+    <section id="privacy">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2>Privacy Policy</h2>
+            </div>
+            <div class="legal-content">
+                <div class="legal-text">
+                    <h1>Privacy Policy for Color Scanner - Palette Maker</h1>
+                    <p><strong>Effective Date:</strong> September 9, 2025<br>
+                    <strong>Last Updated:</strong> September 9, 2025</p>
+
+                    <h2>Introduction</h2>
+                    <p>This Privacy Policy describes how Color Scanner - Palette Maker ("we," "our," or "us") collects, uses, and protects your information when you use our mobile application (the "App"). We are committed to protecting your privacy and ensuring transparency about our data practices.</p>
+
+                    <h2>Information We Collect</h2>
+                    <h3>Information You Provide Directly</h3>
+                    <p><strong>Color Data and Palettes:</strong></p>
+                    <ul>
+                        <li>Colors you capture using the camera or select from your photo library</li>
+                        <li>Color palettes and gradients you create and save</li>
+                        <li>Custom names and tags you assign to colors and palettes</li>
+                        <li>Favorite status of colors and palettes</li>
+                    </ul>
+
+                    <p><strong>App Settings and Preferences:</strong></p>
+                    <ul>
+                        <li>Theme preferences (light, dark, or system)</li>
+                        <li>Language selection</li>
+                        <li>Color format preferences (HEX, RGB, HSL, HSV, CMYK)</li>
+                        <li>Notification and haptic feedback settings</li>
+                    </ul>
+
+                    <h3>Information Collected Automatically</h3>
+                    <p><strong>Device and Usage Information:</strong></p>
+                    <ul>
+                        <li>Device type, operating system version, and app version</li>
+                        <li>App usage patterns and feature interactions</li>
+                        <li>Crash reports and performance data for app improvement</li>
+                        <li>Anonymous analytics data to understand user behavior</li>
+                    </ul>
+
+                    <p><strong>Camera and Photo Library Access:</strong></p>
+                    <ul>
+                        <li>We access your camera only when you actively use the color capture feature</li>
+                        <li>We access your photo library only when you select images for color analysis</li>
+                        <li>Images are processed locally on your device and are not transmitted to our servers</li>
+                    </ul>
+
+                    <h3>Subscription and Purchase Information</h3>
+                    <p><strong>RevenueCat Integration:</strong></p>
+                    <ul>
+                        <li>Subscription status and purchase history through RevenueCat</li>
+                        <li>Anonymous user identifiers for subscription management</li>
+                        <li>Purchase receipts for subscription validation</li>
+                    </ul>
+
+                    <p><strong>Note:</strong> We do not store your payment information. All payments are processed securely through Apple's App Store.</p>
+
+                    <h2>How We Use Your Information</h2>
+                    <h3>Core App Functionality</h3>
+                    <ul>
+                        <li>Process and analyze images to extract color information</li>
+                        <li>Save and organize your color collections and palettes</li>
+                        <li>Provide color format conversions and variations</li>
+                        <li>Enable sharing and exporting of color data</li>
+                    </ul>
+
+                    <h3>App Improvement and Analytics</h3>
+                    <ul>
+                        <li>Analyze app usage patterns to improve user experience</li>
+                        <li>Track feature usage to prioritize development efforts</li>
+                        <li>Monitor app performance and fix bugs</li>
+                        <li>Understand subscription conversion and retention</li>
+                    </ul>
+
+                    <h3>Advertising (Free Version Only)</h3>
+                    <ul>
+                        <li>Display relevant advertisements through Google Mobile Ads</li>
+                        <li>Track ad interactions for optimization (anonymous data only)</li>
+                        <li>Frequency capping to limit ad exposure</li>
+                    </ul>
+
+                    <h2>Data Storage and Security</h2>
+                    <h3>Local Storage</h3>
+                    <ul>
+                        <li>All your color data, palettes, and preferences are stored locally on your device</li>
+                        <li>We use AsyncStorage for secure local data persistence</li>
+                        <li>Your data remains on your device and is not uploaded to external servers</li>
+                    </ul>
+
+                    <h3>Data Security Measures</h3>
+                    <ul>
+                        <li>All data processing occurs locally on your device</li>
+                        <li>We implement industry-standard security practices</li>
+                        <li>Regular security updates and vulnerability assessments</li>
+                        <li>Encrypted data transmission for subscription services</li>
+                    </ul>
+
+                    <h3>Data Retention</h3>
+                    <ul>
+                        <li>Your color data is retained locally until you delete it or uninstall the app</li>
+                        <li>Analytics data is retained for up to 24 months for app improvement purposes</li>
+                        <li>Subscription data is retained as required by Apple's App Store policies</li>
+                    </ul>
+
+                    <h2>Third-Party Services</h2>
+                    <h3>RevenueCat (Subscription Management)</h3>
+                    <ul>
+                        <li><strong>Purpose:</strong> Manage in-app subscriptions and purchases</li>
+                        <li><strong>Data Shared:</strong> Anonymous user identifiers, subscription status</li>
+                        <li><strong>Privacy Policy:</strong> https://www.revenuecat.com/privacy</li>
+                    </ul>
+
+                    <h3>Google Mobile Ads (Advertising)</h3>
+                    <ul>
+                        <li><strong>Purpose:</strong> Display advertisements in the free version</li>
+                        <li><strong>Data Shared:</strong> Anonymous device identifiers, ad interaction data</li>
+                        <li><strong>Privacy Policy:</strong> https://policies.google.com/privacy</li>
+                        <li><strong>Ad Personalization:</strong> You can opt out through iOS Settings > Privacy & Security > Apple Advertising</li>
+                    </ul>
+
+                    <h3>Apple App Store (Payments)</h3>
+                    <ul>
+                        <li><strong>Purpose:</strong> Process subscription payments and manage purchases</li>
+                        <li><strong>Data Shared:</strong> Purchase information as required by Apple</li>
+                        <li><strong>Privacy Policy:</strong> https://www.apple.com/privacy/</li>
+                    </ul>
+
+                    <h2>Your Privacy Rights and Choices</h2>
+                    <h3>Data Access and Control</h3>
+                    <ul>
+                        <li><strong>View Your Data:</strong> All your data is accessible within the app</li>
+                        <li><strong>Export Your Data:</strong> Use the app's export feature to save your color collections</li>
+                        <li><strong>Delete Your Data:</strong> Remove individual colors/palettes or clear all data in Settings</li>
+                    </ul>
+
+                    <h3>Advertising Preferences</h3>
+                    <ul>
+                        <li><strong>Limit Ad Tracking:</strong> Enable "Limit Ad Tracking" in iOS Settings</li>
+                        <li><strong>Ad Personalization:</strong> Disable personalized ads in iOS Privacy Settings</li>
+                        <li><strong>Upgrade to Pro:</strong> Remove all advertisements by subscribing to the Pro version</li>
+                    </ul>
+
+                    <h3>Camera and Photo Permissions</h3>
+                    <ul>
+                        <li><strong>Camera Access:</strong> Required only for color capture functionality</li>
+                        <li><strong>Photo Library Access:</strong> Required only when selecting images for analysis</li>
+                        <li><strong>Permission Management:</strong> Revoke permissions anytime in iOS Settings</li>
+                    </ul>
+
+                    <h2>Children's Privacy</h2>
+                    <p>Our app is not directed to children under 13 years of age. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately.</p>
+
+                    <h2>Contact Information</h2>
+                    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
+                    <p><strong>Email:</strong> xaesionai@gmail.com<br>
+                    <strong>App:</strong> Color Scanner - Palette Maker</p>
+
+                    <h2>Legal Compliance</h2>
+                    <p>This Privacy Policy complies with:</p>
+                    <ul>
+                        <li>Apple App Store Review Guidelines</li>
+                        <li>iOS Privacy Requirements</li>
+                        <li>California Consumer Privacy Act (CCPA)</li>
+                        <li>General Data Protection Regulation (GDPR)</li>
+                        <li>Children's Online Privacy Protection Act (COPPA)</li>
+                    </ul>
+
+                    <p><strong>Last Updated:</strong> September 9, 2025<br>
+                    <strong>Version:</strong> 1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="contact-container fade-in">
+                <h2>Get in Touch</h2>
+                <p class="subtitle">Have questions or feedback? We'd love to hear from you and help make your color journey even better!</p>
+                
+                <form class="contact-form" onsubmit="handleSubmit(event)">
+                    <!-- Form method indicator -->
+                    <div style="background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(0, 212, 255, 0.1)); padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--accent-color);">
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
+                            📧 <strong>Professional Email System:</strong> Your message will be sent directly to our email (xaesionai@gmail.com). Powered by secure Formspree service with native Mail app backup.
+                        </p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <input type="text" id="subject" name="subject" placeholder="What's this about?" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" placeholder="Tell us how we can help you, share your feedback, or ask any questions..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <span>Send Message</span>
+                    </button>
+
+                    <!-- Status indicator -->
+                    <div id="form-status" style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                        Ready to send your message securely
+                    </div>
+                </form>
+
+                <div class="contact-info">
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Prefer to reach out directly? Choose your preferred method:</p>
+                    
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="contact-method-icon">📧</div>
+                            <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">Email Us</h4>
+                            <a href="mailto:xaesionai@gmail.com" class="contact-email">xaesionai@gmail.com</a>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-method-icon">🌟</div>
+                            <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">Feedback</h4>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">We value your input!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#features">Features</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-copyright">
+                    © 2025 Color Scanner - Palette Maker. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" onclick="scrollToTop()" title="Back to top">
+        ↑
+    </button>
+
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Minimalist Interactive Mouse Effect -->
+    <div class="color-orb" id="colorOrb"></div>
+    <div class="color-trail" id="colorTrail1"></div>
+    <div class="color-trail" id="colorTrail2"></div>
+    <div class="color-trail" id="colorTrail3"></div>
+
+    <!-- Konami Code Surprise -->
+    <div class="konami-surprise" id="konamiSurprise">
+        <h3>🎨 Secret Color Master! 🎨</h3>
+        <p>You found the hidden palette! You're a true color enthusiast!</p>
+        <div style="margin-top: 1rem;">
+            <span style="display: inline-block; width: 20px; height: 20px; background: #ff6b6b; border-radius: 50%; margin: 0 5px;"></span>
+            <span style="display: inline-block; width: 20px; height: 20px; background: #4ecdc4; border-radius: 50%; margin: 0 5px;"></span>
+            <span style="display: inline-block; width: 20px; height: 20px; background: #45b7d1; border-radius: 50%; margin: 0 5px;"></span>
+            <span style="display: inline-block; width: 20px; height: 20px; background: #f9ca24; border-radius: 50%; margin: 0 5px;"></span>
+            <span style="display: inline-block; width: 20px; height: 20px; background: #6c5ce7; border-radius: 50%; margin: 0 5px;"></span>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const themeToggle = document.querySelector('.theme-toggle');
+            document.body.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Active navigation
+        function updateActiveNavigation() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const sectionHeight = section.offsetHeight;
+                
+                if (sectionTop <= 100 && sectionTop + sectionHeight > 100) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // App Store Compliant Email Solutions
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            const statusDiv = document.getElementById('form-status');
+            
+            // Simple validation
+            if (!data.name || !data.email || !data.subject || !data.message) {
+                showNotification('Please fill in all fields.', 'error');
+                updateFormStatus('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Add loading state
+            submitBtn.classList.add('loading');
+            updateFormStatus('Sending your message...', 'loading');
+            
+            // Method 1: Try Formspree (App Store approved service)
+            sendViaFormspree(data, submitBtn, event.target);
+        }
+
+        // Update form status
+        function updateFormStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('form-status');
+            if (!statusDiv) return;
+
+            let color, icon;
+            switch(type) {
+                case 'success':
+                    color = '#10b981';
+                    icon = '✅';
+                    break;
+                case 'error':
+                    color = '#ef4444';
+                    icon = '❌';
+                    break;
+                case 'loading':
+                    color = 'var(--accent-color)';
+                    icon = '⏳';
+                    break;
+                default:
+                    color = 'var(--text-secondary)';
+                    icon = 'ℹ️';
+            }
+
+            statusDiv.innerHTML = `${icon} ${message}`;
+            statusDiv.style.color = color;
+        }
+
+        // Formspree integration (App Store compliant)
+        async function sendViaFormspree(data, submitBtn, form) {
+            try {
+                updateFormStatus('Connecting to email service...', 'loading');
+                
+                // Formspree endpoint (active endpoint)
+                const formspreeEndpoint = 'https://formspree.io/f/myzdowdd';
+                
+                const response = await fetch(formspreeEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: data.name,
+                        email: data.email,
+                        subject: data.subject,
+                        message: data.message,
+                        _replyto: data.email,
+                        _subject: `Color Scanner Contact: ${data.subject}`
+                    })
+                });
+
+                if (response.ok) {
+                    // Success
+                    form.reset();
+                    submitBtn.classList.remove('loading');
+                    updateFormStatus('Message sent successfully! We\'ll get back to you soon.', 'success');
+                    showNotification('Message sent successfully! We\'ll get back to you soon.', 'success');
+                } else {
+                    throw new Error('Formspree request failed');
+                }
+
+            } catch (error) {
+                console.log('Formspree failed, falling back to mailto:', error);
+                updateFormStatus('Using backup email method...', 'loading');
+                // Fallback to native mailto
+                setTimeout(() => fallbackToMailto(data, submitBtn, form), 1000);
+            }
+        }
+
+        // Native mailto fallback (always works)
+        function fallbackToMailto(data, submitBtn, form) {
+            // Method 2: Native mailto (100% App Store compliant)
+            const subject = encodeURIComponent(`Color Scanner Contact: ${data.subject}`);
+            const body = encodeURIComponent(
+                `Name: ${data.name}\n` +
+                `Email: ${data.email}\n\n` +
+                `Message:\n${data.message}\n\n` +
+                `---\nSent from Color Scanner - Palette Maker`
+            );
+            const mailtoLink = `mailto:xaesionai@gmail.com?subject=${subject}&body=${body}`;
+            
+            // Copy to clipboard as backup
+            if (navigator.clipboard) {
+                const emailContent = `To: xaesionai@gmail.com\nSubject: ${data.subject}\n\nName: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`;
+                navigator.clipboard.writeText(emailContent).catch(() => {
+                    console.log('Clipboard copy failed');
+                });
+            }
+            
+            // Open native mail app
+            window.location.href = mailtoLink;
+            
+            // Reset form and button state
+            form.reset();
+            submitBtn.classList.remove('loading');
+            
+            // Update status
+            updateFormStatus('Email app opened! Content copied to clipboard.', 'success');
+            showNotification('📧 Opening your mail app! Email content also copied to clipboard.', 'success');
+        }
+
+        // Scroll to top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide scroll to top button
+        function toggleScrollButton() {
+            const scrollButton = document.querySelector('.scroll-to-top');
+            if (window.pageYOffset > 300) {
+                scrollButton.classList.add('visible');
+            } else {
+                scrollButton.classList.remove('visible');
+            }
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            
+            // Color scheme based on type
+            let bgColor, icon;
+            switch(type) {
+                case 'success':
+                    bgColor = 'linear-gradient(135deg, #10b981, #059669)';
+                    icon = '✅';
+                    break;
+                case 'error':
+                    bgColor = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    icon = '❌';
+                    break;
+                case 'info':
+                    bgColor = 'linear-gradient(135deg, var(--accent-color), #00d4ff)';
+                    icon = 'ℹ️';
+                    break;
+                default:
+                    bgColor = 'linear-gradient(135deg, var(--accent-color), #00d4ff)';
+                    icon = 'ℹ️';
+            }
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                max-width: 350px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2rem;">${icon}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Animate out and remove
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 400);
+            }, 5000);
+        }
+
+        // Interactive color scheme changer
+        function applyColorScheme(color, element) {
+            const root = document.documentElement;
+            
+            // Update accent color
+            root.style.setProperty('--accent-color', color);
+            root.style.setProperty('--cursor-color', color);
+            
+            // Update cursor trail
+            updateCursorColor(color);
+            
+            // Update active state
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.classList.remove('active');
+            });
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Show notification
+            showNotification(`🎨 Color scheme updated! (${color})`, 'success');
+            
+            // Save preference
+            localStorage.setItem('accent-color', color);
+            localStorage.setItem('cursor-color', color);
+        }
+
+        // Custom color picker handler
+        function applyCustomColor(color) {
+            const root = document.documentElement;
+            
+            // Update accent color
+            root.style.setProperty('--accent-color', color);
+            root.style.setProperty('--cursor-color', color);
+            
+            // Update cursor trail
+            updateCursorColor(color);
+            
+            // Remove active states from predefined swatches
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.classList.remove('active');
+            });
+            
+            // Show notification
+            showNotification(`🎨 Custom color applied! (${color})`, 'success');
+            
+            // Save preference
+            localStorage.setItem('accent-color', color);
+            localStorage.setItem('cursor-color', color);
+        }
+
+        // Update cursor trail color
+        function updateCursorColor(color) {
+            // Only apply cursor trail on desktop
+            if (window.innerWidth > 768) {
+                const trail = document.getElementById('cursorTrail');
+                trail.classList.remove('rainbow-mode');
+                trail.classList.add('custom-color');
+                trail.style.background = color;
+                trail.style.boxShadow = `0 0 20px ${color}`;
+            }
+        }
+
+        // Rainbow mode toggle
+        let rainbowMode = false;
+        function toggleRainbowMode() {
+            const trail = document.getElementById('cursorTrail');
+            rainbowMode = !rainbowMode;
+            
+            if (rainbowMode) {
+                trail.classList.add('rainbow-mode');
+                trail.classList.remove('custom-color');
+                trail.style.background = '';
+                trail.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.5)';
+                showNotification('🌈 Rainbow cursor activated! Moving like a rainbow!', 'success');
+                
+                // Remove active states
+                document.querySelectorAll('.color-swatch').forEach(swatch => {
+                    swatch.classList.remove('active');
+                });
+            } else {
+                trail.classList.remove('rainbow-mode');
+                const currentColor = localStorage.getItem('cursor-color') || '#667eea';
+                updateCursorColor(currentColor);
+                showNotification('🎨 Rainbow mode disabled!', 'info');
+            }
+        }
+
+        // Cursor trail effect
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+
+        function updateCursorTrail() {
+            const trail = document.getElementById('cursorTrail');
+            trailX += (mouseX - trailX) * 0.1;
+            trailY += (mouseY - trailY) * 0.1;
+            
+            trail.style.left = trailX + 'px';
+            trail.style.top = trailY + 'px';
+            
+            requestAnimationFrame(updateCursorTrail);
+        }
+
+        // Simplified scroll function (color preview removed)
+        function toggleColorPreview() {
+            // Function kept for compatibility but does nothing
+            // Color preview has been replaced with minimalist mouse effects
+        }
+
+        // Auto show/hide function (simplified)
+        function autoToggleColorPreview() {
+            // Function kept for compatibility but does nothing
+            // Color preview has been replaced with minimalist mouse effects
+        }
+
+        // Konami Code Easter Egg
+        let konamiCode = [];
+        const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+
+        function handleKonamiCode(event) {
+            konamiCode.push(event.keyCode);
+            
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.length === konamiSequence.length && 
+                konamiCode.every((code, index) => code === konamiSequence[index])) {
+                
+                const surprise = document.getElementById('konamiSurprise');
+                surprise.classList.add('active');
+                
+                setTimeout(() => {
+                    surprise.classList.remove('active');
+                    konamiCode = [];
+                }, 5000);
+            }
+        }
+
+        // Parallax effect
+        function handleParallax() {
+            const parallax = document.querySelector('.hero-parallax');
+            if (parallax && window.pageYOffset < window.innerHeight) {
+                const yPos = window.pageYOffset * 0.5;
+                parallax.style.transform = `translateY(${yPos}px)`;
+            }
+        }
+
+        // Load saved color preference
+        function loadColorPreference() {
+            const savedColor = localStorage.getItem('accent-color');
+            const savedCursorColor = localStorage.getItem('cursor-color');
+            
+            if (savedColor) {
+                document.documentElement.style.setProperty('--accent-color', savedColor);
+                
+                // Update custom color picker
+                const customInput = document.getElementById('customColorInput');
+                if (customInput) {
+                    customInput.value = savedColor;
+                }
+                
+                // Find and activate matching swatch
+                const swatches = document.querySelectorAll('.color-swatch');
+                swatches.forEach(swatch => {
+                    const swatchColor = window.getComputedStyle(swatch).backgroundColor;
+                    const rgb = hexToRgb(savedColor);
+                    if (rgb && swatchColor.includes(rgb.r) && swatchColor.includes(rgb.g) && swatchColor.includes(rgb.b)) {
+                        swatch.classList.add('active');
+                    }
+                });
+            }
+            
+            if (savedCursorColor) {
+                document.documentElement.style.setProperty('--cursor-color', savedCursorColor);
+                updateCursorColor(savedCursorColor);
+            }
+        }
+
+        // Helper function to convert hex to rgb
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Fade in animation on scroll
+        function isElementPartiallyInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            return (rect.top < windowHeight && rect.bottom > 0);
+        }
+
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in, .feature-card');
+            
+            elements.forEach(element => {
+                if (isElementPartiallyInViewport(element) && !element.classList.contains('animate')) {
+                    element.classList.add('animate');
+                }
+            });
+            
+            // Update active navigation
+            updateActiveNavigation();
+        }
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            loadColorPreference();
+            handleScrollAnimations();
+            
+            // Only initialize cursor trail on desktop
+            // Enhanced cursor trail and minimalist mouse effects
+            if (window.innerWidth > 768) {
+                updateCursorTrail();
+                
+                // Minimalist color orb and trails
+                const colorOrb = document.getElementById('colorOrb');
+                const colorTrails = [
+                    document.getElementById('colorTrail1'),
+                    document.getElementById('colorTrail2'),
+                    document.getElementById('colorTrail3')
+                ];
+                
+                let mouseTrailPositions = [
+                    { x: 0, y: 0 },
+                    { x: 0, y: 0 },
+                    { x: 0, y: 0 }
+                ];
+                
+                // Add event listeners for minimalist effects
+                document.addEventListener('mousemove', function(e) {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    
+                    // Update color orb position
+                    colorOrb.style.left = (mouseX - 7.5) + 'px';
+                    colorOrb.style.top = (mouseY - 7.5) + 'px';
+                    colorOrb.style.opacity = '0.8';
+                    
+                    // Update trail positions with delay
+                    mouseTrailPositions.unshift({ x: mouseX, y: mouseY });
+                    mouseTrailPositions.pop();
+                    
+                    colorTrails.forEach((trail, index) => {
+                        if (mouseTrailPositions[index]) {
+                            trail.style.left = (mouseTrailPositions[index].x - 4) + 'px';
+                            trail.style.top = (mouseTrailPositions[index].y - 4) + 'px';
+                            trail.style.opacity = (0.6 - index * 0.2);
+                        }
+                    });
+                    
+                    // Legacy cursor trail
+                    document.getElementById('cursorTrail').style.opacity = '0.7';
+                });
+                
+                document.addEventListener('mouseleave', function() {
+                    colorOrb.style.opacity = '0';
+                    colorTrails.forEach(trail => trail.style.opacity = '0');
+                    document.getElementById('cursorTrail').style.opacity = '0';
+                });
+            }
+            
+            document.addEventListener('keydown', handleKonamiCode);
+        });
+
+        // Check on scroll
+        let ticking = false;
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(function() {
+                    handleScrollAnimations();
+                    toggleScrollButton();
+                    toggleColorPreview();
+                    handleParallax();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Enhanced Mobile menu toggle with smooth animations
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const mobileButton = document.querySelector('.mobile-menu');
+            const body = document.body;
+            
+            if (navLinks.classList.contains('mobile-open')) {
+                // Closing menu
+                navLinks.classList.remove('mobile-open');
+                mobileButton.textContent = '☰';
+                body.style.overflow = 'auto'; // Re-enable scrolling
+                
+                // Add close animation class
+                navLinks.style.transform = 'translateY(-100%)';
+                navLinks.style.opacity = '0';
+                
+                setTimeout(() => {
+                    navLinks.style.display = 'none';
+                }, 400);
+            } else {
+                // Opening menu
+                navLinks.style.display = 'flex';
+                navLinks.classList.add('mobile-open');
+                mobileButton.textContent = '✕';
+                body.style.overflow = 'hidden'; // Prevent background scrolling
+                
+                // Trigger reflow and start animation
+                navLinks.offsetHeight;
+                navLinks.style.transform = 'translateY(0)';
+                navLinks.style.opacity = '1';
+            }
+        }
+
+        // Enhanced close mobile menu function
+        function closeMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const mobileButton = document.querySelector('.mobile-menu');
+            const body = document.body;
+            
+            navLinks.classList.remove('mobile-open');
+            mobileButton.textContent = '☰';
+            body.style.overflow = 'auto';
+            
+            navLinks.style.transform = 'translateY(-100%)';
+            navLinks.style.opacity = '0';
+            
+            setTimeout(() => {
+                navLinks.style.display = 'none';
+            }, 400);
+        }
+
+        // Header background on scroll (with theme support)
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            
+            if (window.scrollY > 50) {
+                if (isDark) {
+                    header.style.background = 'rgba(45, 45, 45, 0.98)';
+                } else {
+                    header.style.background = 'rgba(255, 255, 255, 0.98)';
+                }
+                header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                if (isDark) {
+                    header.style.background = 'rgba(45, 45, 45, 0.95)';
+                } else {
+                    header.style.background = 'rgba(255, 255, 255, 0.95)';
+                }
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Color preview auto show/hide on scroll
+        window.addEventListener('scroll', autoToggleColorPreview);
+
+        // Staggered animation for feature cards
+        window.addEventListener('load', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>
